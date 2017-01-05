@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     boolean h7 = false; //Was the BTLE tested
     boolean normal = false; //Was the BT tested
     private Spinner spinner1;
-    private ArrayList<Integer>mBeatToBeatArray;
+    private ArrayList<Integer>mBeatToBeatArray = new ArrayList<>();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -407,12 +407,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     }
 
     public void addToBeatToBeat(Integer[] integers){
-        mBeatToBeatArray.addAll(Arrays.asList(integers));
-        if (mBeatToBeatArray.size() >= 1000){
-            //run gary's method
-            int score = Algorithm.calculateHRV_Score(mBeatToBeatArray);
-            System.out.println("Final Score:" + score );
-            mBeatToBeatArray = new ArrayList<>();
+        if (integers != null) {
+            mBeatToBeatArray.addAll(Arrays.asList(integers));
+            if (mBeatToBeatArray.size() >= 10) {
+                //run gary's method
+                int score = Algorithm.calculateHRV_Score(mBeatToBeatArray);
+                System.out.println("Final Score:" + score);
+                mBeatToBeatArray = new ArrayList<>();
+            }
         }
     }
 

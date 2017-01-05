@@ -13,10 +13,10 @@ public class Algorithm {
      we just hardcode them
      **/
 
-    private static final double LN_MEAN = 3.92;
-    private static final double LN_VAR = 0.64;
-    private static final double HRV_MEAN = 60.26;
-    private static final double HRV_VAR = 9.92;
+    private static final double LN_MEAN = 3.02;
+    private static final double LN_VAR = 0.69;
+    private static final double HRV_MEAN = 61.83;
+    private static final double HRV_VAR = 10.59;
 
 
     public static int calculateHRV_Score(ArrayList<Integer> hrvRaw_array) {
@@ -37,7 +37,7 @@ public class Algorithm {
 
 // take natural logarithm of the number above – this is is the result.
             score = Math.log10(Math.sqrt(sum / (hrvRaw_array.size() -1)));
-        System.out.println("Inside org.marco45.polarheartmonitor.Algorithm Class LN(rmssd): " + score );
+        System.out.println("Inside Algorithm Class LN(rmssd): " + score );
 
         return extrapolateScore(score, LN_MEAN,LN_VAR, HRV_MEAN, HRV_VAR);
 
@@ -52,6 +52,8 @@ public class Algorithm {
 
 
       double factor = (Math.abs(ln_mean - rmssd))/ln_variance;
+
+
 
       if (rmssd < ln_mean) {
 
