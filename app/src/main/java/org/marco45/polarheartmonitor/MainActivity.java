@@ -410,7 +410,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         mBeatToBeatArray.addAll(Arrays.asList(integers));
         if (mBeatToBeatArray.size() >= 1000){
             //run gary's method
-            Algorithm.calculateHRV_Score(mBeatToBeatArray);
+            int score = Algorithm.calculateHRV_Score(mBeatToBeatArray);
+            System.out.println("Final Score:" + score );
             mBeatToBeatArray = new ArrayList<>();
         }
     }
