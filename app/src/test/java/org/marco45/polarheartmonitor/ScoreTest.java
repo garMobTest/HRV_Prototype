@@ -1,6 +1,9 @@
+package org.marco45.polarheartmonitor;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.marco45.polarheartmonitor.Algorithm;
 
 /**
  * Created by garrypolykoff on 1/5/17.
