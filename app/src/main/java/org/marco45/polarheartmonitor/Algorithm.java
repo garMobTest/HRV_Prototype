@@ -1,5 +1,7 @@
 package org.marco45.polarheartmonitor;
 
+import java.util.ArrayList;
+
 /**
  * Created by garrypolykoff on 1/5/17.
  */
@@ -17,15 +19,15 @@ public class Algorithm {
     private static final double HRV_VAR = 9.92;
 
 
-    public static int calculateHRV_Score(int[] hrvRaw_array) {
+    public static int calculateHRV_Score(ArrayList<Integer> hrvRaw_array) {
 
 
         double score = 0.0;
         double sum = 0.0;
 
-        for (int i = 0; i < hrvRaw_array.length -1; i++) {
+        for (int i = 0; i < hrvRaw_array.size() -1; i++) {
 
-            sum += Math.pow((hrvRaw_array[i + 1] - hrvRaw_array[i]), 2);
+            sum += Math.pow((hrvRaw_array.get(i + 1) - hrvRaw_array.get(i)), 2);
         }
 
 
@@ -34,7 +36,7 @@ public class Algorithm {
         // Log.e("Score:", score + "");
 
 // take natural logarithm of the number above – this is is the result.
-            score = Math.log10(Math.sqrt(sum / (hrvRaw_array.length -1)));
+            score = Math.log10(Math.sqrt(sum / (hrvRaw_array.size() -1)));
         System.out.println("Inside org.marco45.polarheartmonitor.Algorithm Class LN(rmssd): " + score );
 
         return extrapolateScore(score, LN_MEAN,LN_VAR, HRV_MEAN, HRV_VAR);

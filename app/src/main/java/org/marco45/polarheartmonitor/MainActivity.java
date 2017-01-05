@@ -71,15 +71,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         Log.i("Main Activity", "Starting Polar HR monitor main activity");
         DataHandler.getInstance().addObserver(this);
         mBeatToBeatArray = new ArrayList<>();
-        AdView mAdView = (AdView) findViewById(R.id.adView);
 
-        // Create an ad request. Check logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        // Start loading the ad in the background.
-        mAdView.loadAd(adRequest);
 
         //Verify if device is to old for BTLE
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -418,6 +410,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         mBeatToBeatArray.addAll(Arrays.asList(integers));
         if (mBeatToBeatArray.size() >= 1000){
             //run gary's method
+            Algorithm.calculateHRV_Score(mBeatToBeatArray);
+            mBeatToBeatArray = new ArrayList<>();
         }
     }
 
