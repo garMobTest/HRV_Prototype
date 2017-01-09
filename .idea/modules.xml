@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PolarHeartRateApplication-1.6.iml" filepath="$PROJECT_DIR$/PolarHeartRateApplication-1.6.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HRV_Prototype.iml" filepath="$PROJECT_DIR$/HRV_Prototype.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

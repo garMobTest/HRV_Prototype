@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         setContentView(R.layout.activity_main);
         Log.i("Main Activity", "Starting Polar HR monitor main activity");
         DataHandler.getInstance().addObserver(this);
-        mBeatToBeatArray = new ArrayList<>();
+       // mBeatToBeatArray = new ArrayList<>();
 
 
         //Verify if device is to old for BTLE
@@ -409,11 +409,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     public void addToBeatToBeat(Integer[] integers){
         if (integers != null) {
             mBeatToBeatArray.addAll(Arrays.asList(integers));
-            if (mBeatToBeatArray.size() >= 10) {
+            if (mBeatToBeatArray.size() >= 20) {
                 //run gary's method
                 int score = Algorithm.calculateHRV_Score(mBeatToBeatArray);
                 System.out.println("Final Score:" + score);
-                mBeatToBeatArray = new ArrayList<>();
+               // mBeatToBeatArray = new ArrayList<>();
+                mBeatToBeatArray.clear();
             }
         }
     }

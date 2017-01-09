@@ -25,7 +25,12 @@ public class Algorithm {
         double score = 0.0;
         double sum = 0.0;
 
+        System.out.println("Array size: " + hrvRaw_array.size());
+
+
         for (int i = 0; i < hrvRaw_array.size() -1; i++) {
+
+          //  System.out.println("Member: " + hrvRaw_array.get(i));
 
             sum += Math.pow((hrvRaw_array.get(i + 1) - hrvRaw_array.get(i)), 2);
         }
