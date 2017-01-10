@@ -1,5 +1,7 @@
 package org.marco45.polarheartmonitor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 
 import com.androidplot.xy.SimpleXYSeries;
@@ -36,9 +38,13 @@ public class DataHandler extends Observable{
 	SimpleXYSeries series1;
 	ConnectThread reader;
 	H7ConnectThread H7;
+
+	private ArrayList<Integer>mBeatToBeatArray = new ArrayList<>();;
+	private int mHRV = 0;
+
 	
 	int pos=0;
-	int val=0;
+	int valBPM =0;
 	int min=0;
 	int max=0;
 	
@@ -61,33 +67,35 @@ public class DataHandler extends Observable{
 			pos=0;
 		}
 		else if (pos==5){
-			cleanInput(i);
+			cleanInput(i,null);
 		}
 		pos++;
 	}
 	
-	public void cleanInput(int i){
-		val=i;
-		if(val!=0){
-			data+=val;//Average maths
+	public void cleanInput(int i, Integer[] beatVar){
+		valBPM =i;
+		if(valBPM !=0){
+			data+= valBPM;//Average maths
 			total++;//Average maths
 		}
-		if(val<min||min==0)
-			min=val;
-		else if(val>max)
-			max=val;
+		if(valBPM <min||min==0)
+			min= valBPM;
+		else if(valBPM >max)
+			max= valBPM;
+
+		if (beatVar!= null) addToBeatToBeat(beatVar);
 		setChanged();
 		notifyObservers();
 	}
 
-    public String getLastValue(){
+    public String getLastBpmValue(){
 
-        return val + " BPM";
+        return valBPM + " BPM";
     }
 
-    public int getLastIntValue(){
+    public int getLastBPMIntValue(){
 
-        return val;
+        return valBPM;
     }
 	
 	public String getMin(){
@@ -138,5 +146,20 @@ public class DataHandler extends Observable{
 	public H7ConnectThread getH7(){
 		return H7;
 	}
-	
+
+	public void addToBeatToBeat(Integer[] integers){
+		mBeatToBeatArray.addAll(Arrays.asList(integers));
+		if (mBeatToBeatArray.size() >= 30){
+			//run gary's method
+			mHRV = Algorithm.calculateHRV_Score(mBeatToBeatArray);
+			mBeatToBeatArray = new ArrayList<>();
+		}
+	}
+	public Integer getLastRR(){
+		return mBeatToBeatArray.get(mBeatToBeatArray.size());
+	}
+
+	public int getmHRV() {
+		return mHRV;
+	}
 }

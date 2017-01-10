@@ -1,6 +1,5 @@
 package org.marco45.polarheartmonitor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +10,6 @@ import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.SimpleXYSeries;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,7 +54,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     boolean h7 = false; //Was the BTLE tested
     boolean normal = false; //Was the BT tested
     private Spinner spinner1;
-    private ArrayList<Integer>mBeatToBeatArray;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -70,7 +67,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         setContentView(R.layout.activity_main);
         Log.i("Main Activity", "Starting Polar HR monitor main activity");
         DataHandler.getInstance().addObserver(this);
-        mBeatToBeatArray = new ArrayList<>();
+
 
 
         //Verify if device is to old for BTLE
@@ -135,10 +132,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         plot.getGraphWidget().setDomainLabelOrientation(-45);
 
         //ANALYTIC
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.VALUE, "Main");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         //t = GoogleAnalytics.getInstance(this).newTracker("UA-51478243-1");
         //#t.setScreenName("Polar main page");
         //#t.send(new HitBuilders.AppViewBuilder().build());
@@ -366,10 +360,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
             public void run() {
                 //menuBool=true;
                 TextView rpm = (TextView) findViewById(R.id.rpm);
-                rpm.setText(DataHandler.getInstance().getLastValue());
+                rpm.setText(DataHandler.getInstance().getLastBpmValue());
 
-                if (DataHandler.getInstance().getLastIntValue() != 0) {
-                    DataHandler.getInstance().getSeries1().addLast(0, DataHandler.getInstance().getLastIntValue());
+                if (DataHandler.getInstance().getLastBPMIntValue() != 0) {
+                    DataHandler.getInstance().getSeries1().addLast(0, DataHandler.getInstance().getLastBPMIntValue());
                     if (DataHandler.getInstance().getSeries1().size() > MAX_SIZE)
                         DataHandler.getInstance().getSeries1().removeFirst();//Prevent graph to overload data.
                     plot.redraw();
@@ -383,6 +377,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
 
                 TextView max = (TextView) findViewById(R.id.max);
                 max.setText(DataHandler.getInstance().getMax());
+
+                TextView rr = (TextView) findViewById(R.id.rr);
+                rr.setText(DataHandler.getInstance().getLastRR());
+
+                TextView textHRV = (TextView) findViewById(R.id.hrv);
+                textHRV.setText(DataHandler.getInstance().getmHRV());
+
+
             }
         });
     }
@@ -406,16 +408,5 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         client.disconnect();
     }
 
-    public void addToBeatToBeat(Integer[] integers){
-        mBeatToBeatArray.addAll(Arrays.asList(integers));
-        if (mBeatToBeatArray.size() >= 1000){
-            //run gary's method
-            Algorithm.calculateHRV_Score(mBeatToBeatArray);
-            mBeatToBeatArray = new ArrayList<>();
-        }
-    }
 
-    public Integer getLastRR(int i){
-        return mBeatToBeatArray.get(i);
-    }
 }
