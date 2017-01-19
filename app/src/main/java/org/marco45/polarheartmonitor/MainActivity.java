@@ -1,5 +1,7 @@
 package org.marco45.polarheartmonitor;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +21,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 
 /**
@@ -54,6 +58,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     boolean h7 = false; //Was the BTLE tested
     boolean normal = false; //Was the BT tested
     private Spinner spinner1;
+    private Spinner fileSpinner;
+    private Context context;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -62,12 +68,21 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     private GoogleApiClient client;
 
 
+    public Context getContext() {
+
+        if (context == null) {
+            context = this.getApplicationContext();
+        }
+
+        return context;
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("Main Activity", "Starting Polar HR monitor main activity");
         DataHandler.getInstance().addObserver(this);
-
 
 
         //Verify if device is to old for BTLE
@@ -82,7 +97,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         if (DataHandler.getInstance().newValue) {
             //Verify if bluetooth if activated, if not activate it
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if(mBluetoothAdapter != null){
+            if (mBluetoothAdapter != null) {
                 if (!mBluetoothAdapter.isEnabled()) {
                     new AlertDialog.Builder(this)
                             .setTitle(R.string.bluetooth)
@@ -108,7 +123,6 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
                     listBT();
                 }
             }
-
 
 
             // Create Graph
@@ -140,7 +154,63 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        // adding save button to write latest hrv results to local file system
+
+        /** this is for testing and will be removed
+         Button button = (Button) findViewById(R.id.saveButton);
+         button.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View v) {
+
+         // assemble the payload of 2 numbers: average heartbeat per minute, hrv score - separated by comma
+         String payload = "45,55";
+
+
+         String filename =  DataAccess.writeToFile(payload, getContext());
+
+         if (filename != null) {
+
+         TextView lastFile = (TextView) findViewById(R.id.fileNameView);
+         lastFile.setText(filename);
+         populateFileSpinner();
+         }
+
+
+
+
+
+
+         }
+         });
+
+         **/
+
     }
+
+    private void populateFileSpinner() {
+
+
+        //Populate drop down
+
+        fileSpinner = (Spinner) findViewById(R.id.selectFile);
+        File[] files = getContext().getFilesDir().listFiles();
+
+        String[] list = new String[files.length];
+        String[] spinnerList = new String[files.length];
+
+        for (int i = 0; i < files.length; i++) {
+            list[i] = files[i].getAbsolutePath().toString();
+            spinnerList[i] = list[i].substring(list[i].lastIndexOf("/") + 1);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, spinnerList);
+        fileSpinner.setAdapter(adapter);
+
+        fileSpinner.setOnItemSelectedListener(this);
+        fileSpinner.setAdapter(adapter);
+
+    }
+
 
     protected void onDestroy() {
         super.onDestroy();
@@ -271,26 +341,41 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
     /**
      * When the option is selected in the dropdown we turn on the bluetooth
      */
-    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-                               long arg3) {
+    public void onItemSelected(AdapterView<?> parent, View view, int pos,
+                               long id) {
 
 
-        if (arg2 != 0) {
-            //Actual work
-            DataHandler.getInstance().setID(arg2);
-            if (!h7 && ((BluetoothDevice) pairedDevices.toArray()[DataHandler.getInstance().getID() - 1]).getName().contains("H7") && DataHandler.getInstance().getReader() == null) {
+        if (pos != 0) {
 
-                Log.i("Main Activity", "Starting h7");
-                DataHandler.getInstance().setH7(new H7ConnectThread((BluetoothDevice) pairedDevices.toArray()[DataHandler.getInstance().getID() - 1], this));
-                h7 = true;
-            } else if (!normal && DataHandler.getInstance().getH7() == null) {
+            if (parent.getId() == R.id.spinner1) {
 
-                Log.i("Main Activity", "Starting normal");
-                DataHandler.getInstance().setReader(new ConnectThread((BluetoothDevice) pairedDevices.toArray()[arg2 - 1], this));
-                DataHandler.getInstance().getReader().start();
-                normal = true;
+                //Actual work
+                DataHandler.getInstance().setID(pos);
+                if (!h7 && ((BluetoothDevice) pairedDevices.toArray()[DataHandler.getInstance().getID() - 1]).getName().contains("H7") && DataHandler.getInstance().getReader() == null) {
+
+                    Log.i("Main Activity", "Starting h7");
+                    DataHandler.getInstance().setH7(new H7ConnectThread((BluetoothDevice) pairedDevices.toArray()[DataHandler.getInstance().getID() - 1], this));
+                    h7 = true;
+                } else if (!normal && DataHandler.getInstance().getH7() == null) {
+
+                    Log.i("Main Activity", "Starting normal");
+                    DataHandler.getInstance().setReader(new ConnectThread((BluetoothDevice) pairedDevices.toArray()[pos - 1], this));
+                    DataHandler.getInstance().getReader().start();
+                    normal = true;
+                }
+                menuBool = true;
+
+            } else if (parent.getId() == R.id.selectFile) {
+
+                String selected = parent.getItemAtPosition(pos).toString();
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                intent.putExtra("fileName", selected);
+                startActivity(intent);
+
+
+                // For Open New Screen
+                setContentView(R.layout.activity_second);
             }
-            menuBool = true;
 
         }
 
@@ -384,10 +469,32 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
                 TextView textHRV = (TextView) findViewById(R.id.hrv);
                 textHRV.setText(DataHandler.getInstance().getmHRV());
 
+                // adding save button to write latest hrv results to local file system
+                Button button = (Button) findViewById(R.id.saveButton);
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+
+                        // assemble the payload of 2 numbers: average heartbeat per minute, hrv score - separated by comma
+                        String payload = DataHandler.getInstance().getAvg() + "," + DataHandler.getInstance().getmHRV();
+
+
+                        String filename = DataAccess.writeToFile(payload, getContext());
+
+                        if (filename != null) {
+
+                            TextView lastFile = (TextView) findViewById(R.id.fileNameView);
+                            lastFile.setText(filename);
+                            populateFileSpinner();
+                        }
+
+                    }
+                });
+
 
             }
         });
     }
+
 
     public void onStop() {
         super.onStop();
