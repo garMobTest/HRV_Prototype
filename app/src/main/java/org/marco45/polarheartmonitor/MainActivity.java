@@ -157,7 +157,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
 
         // adding save button to write latest hrv results to local file system
 
-        /** this is for testing and will be removed
+/**
          Button button = (Button) findViewById(R.id.saveButton);
          button.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
@@ -183,7 +183,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
          }
          });
 
-         **/
+**/
 
     }
 
@@ -199,8 +199,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
         String[] spinnerList = new String[files.length];
 
         for (int i = 0; i < files.length; i++) {
-            list[i] = files[i].getAbsolutePath().toString();
+
+
+            String path = files[i].getAbsolutePath().toString();
+            list[i] = path;
             spinnerList[i] = list[i].substring(list[i].lastIndexOf("/") + 1);
+
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, spinnerList);
@@ -375,6 +379,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
 
                 // For Open New Screen
                 setContentView(R.layout.activity_second);
+                
             }
 
         }
@@ -463,11 +468,14 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
                 TextView max = (TextView) findViewById(R.id.max);
                 max.setText(DataHandler.getInstance().getMax());
 
-                TextView rr = (TextView) findViewById(R.id.rr);
+/**
+               TextView rr = (TextView) findViewById(R.id.rr);
                 rr.setText(DataHandler.getInstance().getLastRR());
-
-                TextView textHRV = (TextView) findViewById(R.id.hrv);
-                textHRV.setText(DataHandler.getInstance().getmHRV());
+ **/
+                if (DataHandler.getInstance().getmHRV() > 0) {
+                    TextView textHRV = (TextView) findViewById(R.id.hrv);
+                    textHRV.setText("Score: " + String.valueOf(DataHandler.getInstance().getmHRV()));
+                }
 
                 // adding save button to write latest hrv results to local file system
                 Button button = (Button) findViewById(R.id.saveButton);

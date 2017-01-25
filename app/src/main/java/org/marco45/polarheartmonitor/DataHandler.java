@@ -149,10 +149,10 @@ public class DataHandler extends Observable{
 
 	public void addToBeatToBeat(Integer[] integers){
 		mBeatToBeatArray.addAll(Arrays.asList(integers));
-		if (mBeatToBeatArray.size() >= 30){
+		if (mBeatToBeatArray.size() >= 10){
 			//run gary's method
 			mHRV = Algorithm.calculateHRV_Score(mBeatToBeatArray);
-			mBeatToBeatArray = new ArrayList<>();
+			mBeatToBeatArray.clear();
 		}
 	}
 	public Integer getLastRR(){
@@ -160,6 +160,7 @@ public class DataHandler extends Observable{
 	}
 
 	public int getmHRV() {
+
 		return mHRV;
 	}
 }

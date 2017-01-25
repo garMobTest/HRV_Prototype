@@ -6,24 +6,25 @@
 
     <TextView
         android:id="@+id/dateView"
-        android:layout_width="wrap_content"
+        android:layout_width="335dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.33"
+        android:layout_weight="0.09"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/heartView"
-        android:layout_width="wrap_content"
+        android:layout_width="339dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.53"
+        android:layout_weight="0.10"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/hrvView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.33"
+        android:layout_weight="0.11"
         android:text="TextView" />
+
 
     <Button
         android:id="@+id/btnBack"
