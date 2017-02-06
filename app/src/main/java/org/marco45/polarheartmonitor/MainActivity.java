@@ -478,6 +478,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
                 }
 
                 // adding save button to write latest hrv results to local file system
+
+               /**
                 Button button = (Button) findViewById(R.id.saveButton);
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -497,6 +499,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener, Ob
 
                     }
                 });
+
+                **/
 
 
             }

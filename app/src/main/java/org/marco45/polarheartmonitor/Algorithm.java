@@ -13,7 +13,7 @@ public class Algorithm {
      we just hardcode them
      **/
 
-    private static final double LN_MEAN = 3.92;
+    private static final double LN_MEAN = 2.00;
     private static final double LN_VAR = 0.64;
     private static final double HRV_MEAN = 60.26;
     private static final double HRV_VAR = 9.92;
